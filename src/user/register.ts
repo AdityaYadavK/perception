@@ -3,6 +3,7 @@ import z from "zod";
 import { prisma } from "../utils/prisma.js";
 import bcrypt from "bcrypt";
 import { AppError } from "../utils/error.ts";
+import { validate } from "../utils/validate.ts";
 
 const schema = z.object({
     username: z.string().min(4),
@@ -13,12 +14,9 @@ const schema = z.object({
 const router = express.Router();
 
 router.post("/", async (req: Request, res: Response, next: NextFunction) => {
-    console.log("register path");
+    validate(req.body);
 
-    const parsed = schema.safeParse(req.body);
-    if (!parsed.success) return next(new AppError("parsing failed", 400));
-
-    const { username, email, password } = parsed.data;
+    const { username, email, password } = req.body;
     const hashed = await bcrypt.hash(password, 11);
     if (!hashed) return next(new AppError("password hashing failed", 400));
 
@@ -34,3 +32,5 @@ router.post("/", async (req: Request, res: Response, next: NextFunction) => {
         msg: "user created",
     });
 });
+
+export default router;
