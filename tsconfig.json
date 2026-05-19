@@ -1,0 +1,17 @@
+{
+    "compilerOptions": {
+        "allowImportingTsExtensions": true,
+        "noEmit" : true,
+        "rootDir": "./src",
+        "outDir": "./dist",
+        "module": "nodenext",
+        "target": "es6",
+        "types": ["node"],
+        "strict": true,
+        "isolatedModules": true,
+        "moduleDetection": "force",
+        "skipLibCheck": true
+    },
+    "include": ["src"],
+    "exclude": ["prisma.config.ts", "prisma/**"]
+}
