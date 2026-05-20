@@ -3,16 +3,17 @@ import { AppError } from "./error.ts";
 import jwt, { JwtPayload } from "jsonwebtoken";
 
 interface UserPayload extends JwtPayload {
-    id: string;
-    email: string;
+    id: number;
 }
 
 const mid = (req: Request, res: Response, next: NextFunction) => {
-    const token = req.cookies.token;
+    const token = req.signedCookies?.token ?? req.cookies?.token;
     if (!token) return next(new AppError("sign in again", 400));
+    const jwtSecret = process.env.JWT_SECRET;
+    if (!jwtSecret) return next(new AppError("JWT_SECRET is not set", 500));
 
     try {
-        const user = jwt.verify(token, "process.env.JWT_SECRET");
+        const user = jwt.verify(token, jwtSecret) as UserPayload;
         if (!user) return next(new AppError("invalid token", 400));
     
         if (typeof user === "string") {

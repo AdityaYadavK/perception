@@ -25,14 +25,14 @@ router.post(
 
         if (!user) return next(new AppError("invalid user ops", 400));
 
-        await prisma.post.create({
+        const created = await prisma.post.create({
             data: {
                 text,
                 authorId: res.locals.id,
             },
         });
 
-        res.json({ msg: "post created" });
+        res.json({ msg: "post created", post: created });
     },
 );
 

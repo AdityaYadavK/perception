@@ -6,9 +6,13 @@ import bcrypt from "bcrypt";
 import jwt from "jsonwebtoken";
 
 const router = express.Router();
+const jwtSecret = process.env.JWT_SECRET;
+if (!jwtSecret) {
+    throw new Error("JWT_SECRET is not set");
+}
 
 const schema = z.object({
-    email: z.email(),
+    email: z.string().email(),
     password: z.string().min(6).max(12),
 });
 
@@ -24,11 +28,11 @@ router.post("/", async (req: Request, res: Response, next: NextFunction) => {
         },
     });
     if (!user) return next(new AppError("invalid username", 400));
-    const check = bcrypt.compare(password, user.password);
-    
+    const check = await bcrypt.compare(password, user.password);
+
     if (!check) return next(new AppError("incorrect password", 400));
 
-    const token = jwt.sign({ id: user.id }, "process.env.JWT_SECRET", {
+    const token = jwt.sign({ id: user.id }, jwtSecret, {
         expiresIn: "30d",
     });
 
