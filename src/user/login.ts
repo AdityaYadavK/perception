@@ -2,9 +2,10 @@ import express, { Request, Response, NextFunction } from "express";
 import z from "zod";
 import { AppError } from "../utils/error.ts";
 import prisma from "../utils/prisma.ts";
-const router = express.Router();
 import bcrypt from "bcrypt";
 import jwt from "jsonwebtoken";
+
+const router = express.Router();
 
 const schema = z.object({
     email: z.email(),
@@ -24,6 +25,7 @@ router.post("/", async (req: Request, res: Response, next: NextFunction) => {
     });
     if (!user) return next(new AppError("invalid username", 400));
     const check = bcrypt.compare(password, user.password);
+    
     if (!check) return next(new AppError("incorrect password", 400));
 
     const token = jwt.sign({ id: user.id }, "process.env.JWT_SECRET", {
