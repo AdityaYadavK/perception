@@ -31,12 +31,14 @@ router.post(
         });
         if (exist) {
             const message =
-                exist.username === username ? "username taken" : "email taken";
-            return next(new AppError(message, 400));
+                exist.username === username ? "usern taken" : "email taken";
+            return next(new AppError(message, 409));
         }
 
         const hashed = await bcrypt.hash(password, 11);
-        if (!hashed) return next(new AppError("password hashing failed", 400));
+        if (!hashed) {
+            return next(new AppError("password hashing failed", 400));
+        }
 
         const user = await prisma.user.create({
             data: {
@@ -50,18 +52,18 @@ router.post(
             expiresIn: "30d",
         });
 
-        res
-            .cookie("token", token, {
-                httpOnly: true, //stops js from reading the token
-                secure: false, //cookie is sent over https, false in development
-                sameSite: "strict", //controls across site
-                maxAge: 30 * 24 * 60 * 60 * 1000, //or use expires
-                path: "/", //controls url path
-                signed: true, //prevents tampering
-            })
-            .json({
-                msg: "user created",
-            });
+        console.log(token);
+
+        res.cookie("token", token, {
+            httpOnly: true, //stops js from reading the token
+            secure: false, //cookie is sent over https, false in development
+            sameSite: "strict", //controls across site
+            maxAge: 30 * 24 * 60 * 60 * 1000, //or use expires
+            path: "/", //controls url path
+            signed: true, //prevents tampering
+        }).json({
+            msg: "user created",
+        });
     },
 );
 

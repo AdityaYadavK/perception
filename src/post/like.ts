@@ -5,6 +5,53 @@ import prisma from "../utils/prisma.ts";
 
 const router = express.Router();
 
+const likePost = async (
+    postId: number,
+    userId: number,
+    res: Response,
+    next: NextFunction,
+) => {
+    const post = await prisma.post.findUnique({
+        where: { id: postId },
+    });
+    if (!post) return next(new AppError("post not found", 404));
+
+    const alreadyLiked = await prisma.like.findUnique({
+        where: {
+            userId_postId: {
+                userId,
+                postId,
+            },
+        },
+    });
+    if (alreadyLiked) return next(new AppError("post already liked", 400));
+
+    await prisma.like.create({
+        data: {
+            userId,
+            postId,
+        },
+    });
+
+    res.json({
+        msg: "post liked",
+    });
+};
+
+// like a post
+router.post(
+    "/",
+    auth,
+    async (req: Request, res: Response, next: NextFunction) => {
+        const postId = Number(req.body?.postId);
+        if (Number.isNaN(postId)) return next(new AppError("invalid id", 400));
+
+        const userId = res.locals.id;
+
+        return likePost(postId, userId, res, next);
+    },
+);
+
 // like a post
 router.post(
     "/:id",
@@ -15,31 +62,7 @@ router.post(
 
         const userId = res.locals.id;
 
-        const post = await prisma.post.findUnique({
-            where: { id: postId },
-        });
-        if (!post) return next(new AppError("post not found", 404));
-
-        const alreadyLiked = await prisma.like.findUnique({
-            where: {
-                userId_postId: {
-                    userId,
-                    postId,
-                },
-            },
-        });
-        if (alreadyLiked) return next(new AppError("post already liked", 400));
-
-        await prisma.like.create({
-            data: {
-                userId,
-                postId,
-            },
-        });
-
-        res.json({
-            msg: "post liked",
-        });
+        return likePost(postId, userId, res, next);
     },
 );
 

@@ -27,7 +27,7 @@ router.post("/", async (req: Request, res: Response, next: NextFunction) => {
             email: email,
         },
     });
-    if (!user) return next(new AppError("invalid username", 400));
+    if (!user) return next(new AppError("invalid email", 400));
     const check = await bcrypt.compare(password, user.password);
 
     if (!check) return next(new AppError("incorrect password", 400));

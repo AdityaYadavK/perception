@@ -5,9 +5,85 @@ import prisma from "../utils/prisma.ts";
 
 const router = express.Router();
 
+// followed users feed (default)
+router.get(
+    "/followed",
+    auth,
+    async (req: Request, res: Response, next: NextFunction) => {
+        try {
+            const following = await prisma.follow.findMany({
+                where: {
+                    followerId: res.locals.id,
+                },
+                select: {
+                    followingId: true,
+                },
+            });
+
+            const followingIds = following.map((f) => f.followingId);
+
+            const posts = await prisma.post.findMany({
+                where: {
+                    authorId: {
+                        in: followingIds,
+                    },
+                },
+                include: {
+                    author: {
+                        select: {
+                            username: true,
+                        },
+                    },
+                    comments: {
+                        include: {
+                            author: {
+                                select: {
+                                    username: true,
+                                },
+                            },
+                        },
+                        orderBy: {
+                            createdAt: "asc",
+                        },
+                    },
+                    _count: {
+                        select: {
+                            likes: true,
+                        },
+                    },
+                },
+                orderBy: {
+                    createdAt: "desc",
+                },
+            });
+
+            const formattedPosts = posts.map((post) => ({
+                id: String(post.id),
+                author: post.author.username,
+                content: post.text,
+                timestamp: post.createdAt,
+                likes: post._count.likes,
+                comments: post.comments.map((comment) => ({
+                    id: String(comment.id),
+                    author: comment.author.username,
+                    content: comment.text,
+                    timestamp: comment.createdAt,
+                })),
+            }));
+
+            res.json({
+                msg: "feed fetched",
+                posts: formattedPosts,
+            });
+        } catch (error) {
+            return next(new AppError("internal db error", 500));
+        }
+    },
+);
+
 // random global feed with offset pagination
 router.get(
-    "/random",
+    "/",
     auth,
     async (req: Request, res: Response, next: NextFunction) => {
         const offset = Number(req.query.offset ?? 0);
