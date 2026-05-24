@@ -1,5 +1,5 @@
 import "dotenv/config";
-import express, { Request, Response } from "express";
+import express, { Request, Response, NextFunction } from "express";
 import cp from "cookie-parser";
 import register from "./user/register.ts";
 import login from "./user/login.ts";
@@ -9,6 +9,9 @@ import comment from "./post/comment.ts";
 import like from "./post/like.ts";
 import feed from "./utils/feed.ts";
 import cors, { CorsOptions } from "cors";
+import ehandler from "./utils/ehandler.ts";
+import { AppError } from "./utils/error.ts";
+import { globalLimit, AuthLimit } from "./utils/limit.ts";
 
 const corsOptions: CorsOptions = {
     origin: true,
@@ -26,6 +29,9 @@ if (!jwtSecret) {
 }
 app.use(cp(jwtSecret));
 
+app.use("/api/v1/auth", AuthLimit);
+app.use("/api", globalLimit);
+
 app.use("/api/v1/auth/register", register);
 app.use("/api/v1/auth/login", login);
 app.use("/api/v1/user/follow", follow);
@@ -38,6 +44,13 @@ app.get("/", (req: Request, res: Response) => {
     console.log("health verified!");
     res.json({ msg: "verified" });
 });
+
+// test error handler
+app.get("/test", (req: Request, res: Response, next: NextFunction) => {
+    return next(new AppError("internal handler test", 500));
+});
+
+app.use(ehandler);
 
 // app.listen(process.env.PORT || 3000, () => {
 //     console.log("listening on port : 3000");

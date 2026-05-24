@@ -1,9 +1,9 @@
 export class AppError extends Error {
-    statusCode: Number;
+    statusCode: number;
     status: "fail" | "error";
     isOperational: boolean;
 
-    constructor(message: string, statusCode: Number) {
+    constructor(message: string, statusCode: number) {
         // runs auto
         super(message); // calls parent constructor
         // stores
