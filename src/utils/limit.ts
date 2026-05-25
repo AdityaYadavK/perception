@@ -5,9 +5,9 @@ export const globalLimit = rl({
     limit: 100,
     standardHeaders: true,
     legacyHeaders: false,
-    handler: (req, res, next, options) => {
+    handler: (_req, res, _next, options) => {
         res.status(options.statusCode).json({
-            message: "too many attempt, please try again later",
+            message: "Fetch Limit Exceeded",
         });
     },
 });
@@ -17,9 +17,9 @@ export const AuthLimit = rl({
     limit: 10,
     standardHeaders: true,
     legacyHeaders: false,
-    handler: (req, res, next, options) => {
+    handler: (_req, res, _next, options) => {
         res.status(options.statusCode).json({
-            message: "too many login attempt, please try again later",
+            message: "Login Limit Exceeded",
         });
     },
 });

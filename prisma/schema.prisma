@@ -13,6 +13,7 @@ model User {
     email     String   @unique
     password  String
     createdAt DateTime @default(now())
+    token Token[]
 
     posts    Post[]
     comments Comment[]
@@ -20,6 +21,20 @@ model User {
 
     following Follow[] @relation("following")
     followers Follow[] @relation("followers")
+}
+
+model Token{
+    id String @unique @default(uuid())
+    token String @unique
+    userId Int
+    expiresAt DateTime
+    createdAt DateTime @default(now())
+    isRevoked Boolean @default(false)
+    isReplacedBy String?
+    revokedAt DateTime
+    ip String?
+    userAgent String?
+    user User @relation(fields : [userId], references : [id], onDelete : Cascade)
 }
 
 model Post {

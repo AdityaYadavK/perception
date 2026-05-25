@@ -12,6 +12,9 @@ import cors, { CorsOptions } from "cors";
 import ehandler from "./utils/ehandler.ts";
 import { AppError } from "./utils/error.ts";
 import { globalLimit, AuthLimit } from "./utils/limit.ts";
+import helmet from "helmet";
+import morgan from "morgan";
+import { clean, preventPollution } from "./utils/InputSanitize.ts";
 
 const corsOptions: CorsOptions = {
     origin: true,
@@ -21,8 +24,14 @@ const corsOptions: CorsOptions = {
 };
 
 const app = express();
-app.use(express.json());
+app.use(helmet());
+app.disable("x-powered-by");
+app.use(morgan("dev")); //to log every request
+app.use(express.json({ limit: "10kb" }));
 app.use(cors(corsOptions));
+app.use(clean);
+app.use(preventPollution);
+app.use(express.urlencoded({ extended: true, limit: "10kb" }));
 const jwtSecret = process.env.JWT_SECRET;
 if (!jwtSecret) {
     throw new Error("JWT_SECRET is not set");
@@ -40,13 +49,13 @@ app.use("/api/v1/post/comment", comment);
 app.use("/api/v1/post/like", like);
 app.use("/api/v1/feed", feed);
 
-app.get("/", (req: Request, res: Response) => {
-    console.log("health verified!");
-    res.json({ msg: "verified" });
+// _req for compiler to tell it is only for human and of no use
+app.get("/", (_req: Request, res: Response) => {
+    res.status(200).json({ msg: "verified" });
 });
 
 // test error handler
-app.get("/test", (req: Request, res: Response, next: NextFunction) => {
+app.get("/test", (_req: Request, _res: Response, next: NextFunction) => {
     return next(new AppError("internal handler test", 500));
 });
 

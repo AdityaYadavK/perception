@@ -39,10 +39,10 @@ router.post("/", async (req: Request, res: Response, next: NextFunction) => {
     if (!token) return next(new AppError("internal error", 500));
 
     res.cookie("token", token, {
-        httpOnly: true,
-        sameSite: "strict",
+        httpOnly: true, //JS cannot access
+        sameSite: "strict", //CSRF protection
         maxAge: 30 * 24 * 60 * 60 * 1000,
-        secure: false,
+        secure: process.env.NODE_ENV === "production",
         path: "/",
         signed: true,
     }).json({
