@@ -1,5 +1,5 @@
 import express, { Request, Response, NextFunction } from "express";
-import { AppError } from "./error.ts";
+import { AppError } from "./error.js";
 import jwt, { JwtPayload } from "jsonwebtoken";
 
 interface UserPayload extends JwtPayload {

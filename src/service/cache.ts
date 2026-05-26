@@ -1,4 +1,4 @@
-import rc from "../config/redis.ts";
+import rc from "../config/redis.js";
 
 export default class Cache {
     async get(key: string) {

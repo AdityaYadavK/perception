@@ -1,9 +1,9 @@
 import express, { Request, Response, NextFunction } from "express";
 import z from "zod";
-import prisma from "../utils/prisma.ts";
+import prisma from "../utils/prisma.js";
 import bcrypt from "bcrypt";
-import { AppError } from "../utils/error.ts";
-import { validate } from "../utils/validate.ts";
+import { AppError } from "../utils/error.js";
+import { validate } from "../utils/validate.js";
 import jwt from "jsonwebtoken";
 
 const router = express.Router();

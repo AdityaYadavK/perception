@@ -1,5 +1,5 @@
 import { createClient } from "redis";
-import { AppError } from "../utils/error.ts";
+import { AppError } from "../utils/error.js";
 
 const redisPortEnv = process.env.REDIS_PORT;
 const redisPort = redisPortEnv ? Number.parseInt(redisPortEnv, 10) : undefined;
@@ -49,7 +49,11 @@ rc.on("end", () => {
 
 // IIFE
 (async () => {
-    await rc.connect();
+    try {
+        await rc.connect();
+    } catch (error) {
+        console.error("Redis connection failed", error);
+    }
 })();
 
 export default rc;

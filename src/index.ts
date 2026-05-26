@@ -1,20 +1,20 @@
 import "dotenv/config";
 import express, { Request, Response, NextFunction } from "express";
 import cp from "cookie-parser";
-import register from "./user/register.ts";
-import login from "./user/login.ts";
-import follow from "./user/follow.ts";
-import post from "./post/post.ts";
-import comment from "./post/comment.ts";
-import like from "./post/like.ts";
-import feed from "./utils/feed.ts";
+import register from "./user/register.js";
+import login from "./user/login.js";
+import follow from "./user/follow.js";
+import post from "./post/post.js";
+import comment from "./post/comment.js";
+import like from "./post/like.js";
+import feed from "./utils/feed.js";
 import cors, { CorsOptions } from "cors";
-import ehandler from "./utils/ehandler.ts";
-import { AppError } from "./utils/error.ts";
-import { globalLimit, AuthLimit } from "./utils/limit.ts";
+import ehandler from "./utils/ehandler.js";
+import { AppError } from "./utils/error.js";
+import { globalLimit, AuthLimit } from "./utils/limit.js";
 import helmet from "helmet";
 import morgan from "morgan";
-import { clean, preventPollution } from "./utils/InputSanitize.ts";
+import { clean, preventPollution } from "./utils/InputSanitize.js";
 
 const corsOptions: CorsOptions = {
     origin: true,
@@ -52,11 +52,6 @@ app.use("/api/v1/feed", feed);
 // _req for compiler to tell it is only for human and of no use
 app.get("/", (_req: Request, res: Response) => {
     res.status(200).json({ msg: "verified" });
-});
-
-// test error handler
-app.get("/test", (_req: Request, _res: Response, next: NextFunction) => {
-    return next(new AppError("internal handler test", 500));
 });
 
 app.use(ehandler);

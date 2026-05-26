@@ -1,7 +1,7 @@
 import express, { Request, Response, NextFunction } from "express";
-import auth from "../utils/middleware.ts";
-import { AppError } from "../utils/error.ts";
-import prisma from "../utils/prisma.ts";
+import auth from "../utils/middleware.js";
+import { AppError } from "../utils/error.js";
+import prisma from "../utils/prisma.js";
 
 const router = express.Router();
 

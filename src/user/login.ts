@@ -1,7 +1,7 @@
 import express, { Request, Response, NextFunction } from "express";
 import z from "zod";
-import { AppError } from "../utils/error.ts";
-import prisma from "../utils/prisma.ts";
+import { AppError } from "../utils/error.js";
+import prisma from "../utils/prisma.js";
 import bcrypt from "bcrypt";
 import jwt from "jsonwebtoken";
 

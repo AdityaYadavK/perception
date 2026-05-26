@@ -1,7 +1,7 @@
 import jwt, { type JwtPayload } from "jsonwebtoken";
 import crypto from "crypto";
-import prisma from "./prisma.ts";
-import { AppError } from "./error.ts";
+import prisma from "./prisma.js";
+import { AppError } from "./error.js";
 
 interface AccessTokenPayload extends JwtPayload {
     id: number;

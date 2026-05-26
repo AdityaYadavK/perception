@@ -28,7 +28,15 @@ Required environment variables:
 
 - `DATABASE_URL`
 - `JWT_SECRET`
-- `PORT` (optional, defaults to `3000`)
+
+Optional environment variables:
+
+- `PORT` (defaults to `3000`)
+- `NODE_ENV` (`production` enables secure cookies)
+- `REDIS_HOST` (defaults to `127.0.0.1`)
+- `REDIS_PORT`
+- `REDIS_DB`
+- `REDIS_PASS`
 
 Run commands:
 

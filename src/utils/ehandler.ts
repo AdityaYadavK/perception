@@ -1,4 +1,4 @@
-import express, { Request, Response, NextFunction } from "express";
+import type { Request, Response, NextFunction } from "express";
 
 const ehandler = (
     err: any,
@@ -10,10 +10,12 @@ const ehandler = (
         return next(err);
     }
 
-    const statusCode = err.statusCode;
-    const status = err.status;
-    res.status(statusCode).json({ msg: err.message });
+    const statusCode =
+        typeof err?.statusCode === "number" && err.statusCode >= 400 && err.statusCode <= 599
+            ? err.statusCode
+            : 500;
+    const message = typeof err?.message === "string" ? err.message : "Internal Server Error";
+    res.status(statusCode).json({ msg: message });
 };
 
 export default ehandler;
-

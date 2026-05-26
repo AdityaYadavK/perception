@@ -1,22 +1,20 @@
 FROM node:20-bookworm-slim
 
-ENV NODE_ENV=production \
-    PORT=3000 \
-    PRISMA_HIDE_UPDATE_MESSAGE=true
-
 WORKDIR /app
 
 COPY package.json package-lock.json ./
+RUN npm ci
 
-RUN npm ci --include=dev --omit=optional --no-audit --no-fund \
-    && npm cache clean --force \
-    && chown -R node:node /app
+COPY prisma ./prisma
+COPY src ./src
+COPY types ./types
+COPY tsconfig.json tsconfig.build.json ./
 
-COPY --chown=node:node prisma ./prisma
-COPY --chown=node:node src ./src
+RUN npm run build
+
+ENV NODE_ENV=production
+ENV PORT=3000
 
 EXPOSE 3000
 
-USER node
-
-CMD ["sh", "-c", "./node_modules/.bin/prisma migrate deploy && exec node --import tsx src/server.ts"]
+CMD ["node", "dist/server.js"]

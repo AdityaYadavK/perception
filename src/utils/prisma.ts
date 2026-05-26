@@ -1,6 +1,6 @@
 import { PrismaClient } from "../generated/prisma/index.js";
 import { PrismaPg } from "@prisma/adapter-pg";
-import { AppError } from "./error.ts";
+import { AppError } from "./error.js";
 
 const databaseUrl = process.env.DATABASE_URL;
 if (!databaseUrl) {
