@@ -10,6 +10,8 @@ COPY src ./src
 COPY types ./types
 COPY tsconfig.json tsconfig.build.json ./
 
+RUN npx prisma generate
+
 RUN npm run build
 
 ENV NODE_ENV=production
