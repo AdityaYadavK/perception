@@ -18,7 +18,7 @@ router.post(
 
         // cannot follow yourself
         if (followerId === followingId)
-            return next(new AppError("invalid action", 400));
+            return next(new AppError("narcissist", 400));
 
         const userToFollow = await prisma.user.findUnique({
             where: { id: followingId },

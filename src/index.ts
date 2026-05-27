@@ -36,7 +36,7 @@ const jwtSecret = process.env.JWT_SECRET;
 if (!jwtSecret) {
     throw new Error("JWT_SECRET is not set");
 }
-app.use(cp(jwtSecret));
+app.use(cp());
 
 app.use("/api/v1/auth", AuthLimit);
 app.use("/api", globalLimit);

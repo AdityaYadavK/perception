@@ -19,6 +19,8 @@ const schema = z.union([contentSchema, textSchema]);
 const extractText = (data: z.infer<typeof schema>) =>
     "content" in data ? data.content : data.text;
 
+
+// finds all post - never useful
 router.get(
     "/",
     auth,
@@ -75,6 +77,31 @@ router.get(
     },
 );
 
+// find post with id
+router.get("/:id", async (req: Request, res: Response, next: NextFunction) => {
+    const id = Number(req.params.id);
+
+    if (Number.isNaN(id)) {
+        return next(new AppError("invalid post id", 400));
+    }
+
+    const post = await prisma.post.findUnique({
+        where: { id },
+        include: {
+            likes: true,
+            author : true,
+            comments : true
+        },
+    });
+
+    if (!post) {
+        return next(new AppError("incorrect post id", 404));
+    }
+
+    res.status(200).json(post);
+});
+
+// create post
 router.post(
     "/",
     auth,
@@ -101,6 +128,7 @@ router.post(
     },
 );
 
+// delete post
 router.delete(
     "/:id",
     auth,
@@ -126,6 +154,7 @@ router.delete(
     },
 );
 
+// edit posts
 router.patch(
     "/:id",
     auth,

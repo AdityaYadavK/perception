@@ -60,7 +60,7 @@ router.post(
             sameSite: "strict", //controls across site
             maxAge: 30 * 24 * 60 * 60 * 1000, //or use expires
             path: "/", //controls url path
-            signed: true, //prevents tampering
+            signed: false, //prevents tampering
         }).json({
             msg: "user created",
         });

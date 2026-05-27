@@ -105,7 +105,7 @@ router.get(
                 p."authorId",
                 p."createdAt"
             from "Post" p
-            order by random()
+            order by p."createdAt" desc, p.id desc
             offset ${offset}
             limit ${limit}
         `;
