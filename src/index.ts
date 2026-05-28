@@ -45,7 +45,7 @@ app.use("/api/v1/auth/register", register);
 app.use("/api/v1/auth/login", login);
 app.use("/api/v1/user/follow", follow);
 app.use("/api/v1/post", post);
-app.use("/api/v1/post/comment", comment);
+app.use("/api/v1/comment", comment);
 app.use("/api/v1/post/like", like);
 app.use("/api/v1/feed", feed);
 

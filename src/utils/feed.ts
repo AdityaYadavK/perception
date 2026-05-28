@@ -81,7 +81,6 @@ router.get(
     },
 );
 
-// random global feed with offset pagination
 router.get(
     "/",
     auth,
@@ -98,25 +97,39 @@ router.get(
         }
 
         try {
-            const posts = await prisma.$queryRaw`
-            select
-                p.id,
-                p.text,
-                p."authorId",
-                p."createdAt"
-            from "Post" p
-            order by p."createdAt" desc, p.id desc
-            offset ${offset}
-            limit ${limit}
-        `;
+            const posts = await prisma.post.findMany({
+                skip: offset,
+                take: limit,
+                orderBy: [
+                    { createdAt: "desc" },
+                    { id: "desc" },
+                ],
+                select: {
+                    id: true,
+                    text: true,
+                    authorId: true,
+                    createdAt: true,
+                    author: {
+                        select: {
+                            username: true,
+                        },
+                    },
+                    _count: {
+                        select: {
+                            likes: true,
+                            comments: true,
+                        },
+                    },
+                },
+            });
 
-            res.json({
-                msg: "random feed fetched",
+            res.status(200).json({
+                msg: "feed fetched",
                 offset,
                 limit,
                 posts,
             });
-        } catch (error) {
+        } catch {
             return next(new AppError("internal db error", 500));
         }
     },

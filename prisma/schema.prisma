@@ -8,33 +8,35 @@ datasource db {
 }
 
 model User {
-    id        Int      @id @default(autoincrement())
-    username  String   @unique
-    email     String   @unique
-    password  String
-    createdAt DateTime @default(now())
-    token Token[]
+    id           Int           @id @default(autoincrement())
+    username     String        @unique
+    email        String        @unique
+    password     String
+    createdAt    DateTime      @default(now())
+    token        Token[]
 
-    posts    Post[]
-    comments Comment[]
-    likes    Like[]
+    posts        Post[]
+    comments     Comment[]
+    likes        Like[]
+    commentLikes CommentLike[]
 
-    following Follow[] @relation("following")
-    followers Follow[] @relation("followers")
+    following    Follow[]      @relation("following")
+    followers    Follow[]      @relation("followers")
 }
 
-model Token{
-    id String @unique @default(uuid())
-    token String @unique
-    userId Int
-    expiresAt DateTime
-    createdAt DateTime @default(now())
-    isRevoked Boolean @default(false)
+model Token {
+    id           String   @id @default(uuid())
+    token        String   @unique
+    userId       Int
+    expiresAt    DateTime
+    createdAt    DateTime @default(now())
+    isRevoked    Boolean  @default(false)
     isReplacedBy String?
-    revokedAt DateTime
-    ip String?
-    userAgent String?
-    user User @relation(fields : [userId], references : [id], onDelete : Cascade)
+    revokedAt    DateTime?
+    ip           String?
+    userAgent    String?
+
+    user User @relation(fields: [userId], references: [id], onDelete: Cascade)
 }
 
 model Post {
@@ -73,6 +75,20 @@ model Comment {
 
     parent  Comment?  @relation("CommentReplies", fields: [parentId], references: [id], onDelete: Cascade)
     replies Comment[] @relation("CommentReplies")
+
+    likes CommentLike[]
+}
+
+model CommentLike {
+    id        Int      @id @default(autoincrement())
+    userId    Int
+    commentId Int
+    createdAt DateTime @default(now())
+
+    user    User    @relation(fields: [userId], references: [id], onDelete: Cascade)
+    comment Comment @relation(fields: [commentId], references: [id], onDelete: Cascade)
+
+    @@unique([userId, commentId])
 }
 
 model Follow {

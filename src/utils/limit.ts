@@ -2,7 +2,7 @@ import rl from "express-rate-limit";
 
 export const globalLimit = rl({
     windowMs: 10 * 60 * 1000,
-    limit: 100,
+    limit: 10000000,
     standardHeaders: true,
     legacyHeaders: false,
     handler: (_req, res, _next, options) => {
