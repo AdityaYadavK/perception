@@ -6,6 +6,7 @@ import login from "./user/login.js";
 import follow from "./user/follow.js";
 import post from "./post/post.js";
 import comment from "./post/comment.js";
+import clike from "./comment/like.ts";
 import like from "./post/like.js";
 import feed from "./utils/feed.js";
 import cors, { CorsOptions } from "cors";
@@ -43,11 +44,12 @@ app.use("/api", globalLimit);
 
 app.use("/api/v1/auth/register", register);
 app.use("/api/v1/auth/login", login);
-app.use("/api/v1/user/follow", follow);
+app.use("/api/v1/follow", follow);
 app.use("/api/v1/post", post);
 app.use("/api/v1/comment", comment);
 app.use("/api/v1/post/like", like);
 app.use("/api/v1/feed", feed);
+app.use("/api/v1/clike/", clike);
 
 // _req for compiler to tell it is only for human and of no use
 app.get("/", (_req: Request, res: Response) => {

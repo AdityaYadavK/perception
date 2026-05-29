@@ -15,14 +15,14 @@ const mid = (req: Request, res: Response, next: NextFunction) => {
     try {
         const user = jwt.verify(token, jwtSecret) as UserPayload;
         if (!user) return next(new AppError("invalid token", 400));
-    
+
         if (typeof user === "string") {
             return next(new AppError("something went wrong", 500));
         }
-    
+
         res.locals.id = user.id;
         // locals is used to pass value in middleware
-    
+
         next();
     } catch (e) {
         return next(new AppError(`${e}`, 500));
