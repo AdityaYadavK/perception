@@ -57,7 +57,7 @@ router.post(
         res.cookie("token", token, {
             httpOnly: true, //stops js from reading the token
             secure: false, //cookie is sent over https, false in development
-            sameSite: "strict", //controls across site
+            sameSite: "lax", //controls across site
             maxAge: 30 * 24 * 60 * 60 * 1000, //or use expires
             path: "/", //controls url path
             signed: false, //prevents tampering
