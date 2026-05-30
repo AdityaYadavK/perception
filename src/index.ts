@@ -15,6 +15,8 @@ import { AppError } from "./utils/error.js";
 import { globalLimit, AuthLimit } from "./utils/limit.js";
 import helmet from "helmet";
 import morgan from "morgan";
+import ulike from "./user/like.ts";
+import uclike from "./user/uclike.ts";
 import { clean, preventPollution } from "./utils/InputSanitize.js";
 
 const corsOptions: CorsOptions = {
@@ -50,6 +52,8 @@ app.use("/api/v1/comment", comment);
 app.use("/api/v1/post/like", like);
 app.use("/api/v1/feed", feed);
 app.use("/api/v1/clike/", clike);
+app.use("/api/v1/ulike", ulike);
+app.use("/api/v1/uclike", uclike);
 
 // _req for compiler to tell it is only for human and of no use
 app.get("/", (_req: Request, res: Response) => {
