@@ -15,7 +15,8 @@ router.get(
             if (!Number.isInteger(id) || id <= 0) {
                 return next(new AppError("invalid id", 400));
             }
-
+            // cant use select and include together
+            // include cant be nested in scalar(select) fields
             const user = await prisma.user.findUnique({
                 where: { id },
                 select: {

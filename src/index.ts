@@ -19,6 +19,7 @@ import ulike from "./user/like.ts";
 import uclike from "./user/uclike.ts";
 import logout from "./user/logout.ts";
 import user from "./user/user.ts";
+import me from "./user/me.ts";
 import { clean, preventPollution } from "./utils/InputSanitize.js";
 
 const corsOptions: CorsOptions = {
@@ -58,6 +59,7 @@ app.use("/api/v1/ulike", ulike);
 app.use("/api/v1/uclike", uclike);
 app.use("/api/v1/logout", logout);
 app.use("/api/v1/user", user);
+app.use("/api/v1/me", me);
 
 // _req for compiler to tell it is only for human and of no use
 app.get("/", (_req: Request, res: Response) => {
