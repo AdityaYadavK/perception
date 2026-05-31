@@ -21,6 +21,7 @@ router.get(
 
             const users = await prisma.user.findMany({
                 where: {
+                    // uses the ilike% feature of postgresql
                     username: {
                         contains: username,
                         mode: "insensitive",
