@@ -15,7 +15,7 @@ services:
     environment:
       NODE_ENV: production
       PORT: 3000
-      JWT_SECRET: change-me
+      JWT_SECRET: ${JWT_SECRET:?Set JWT_SECRET in your .env file}
       DATABASE_URL: postgres://postgres:postgres@db:5432/perception
     ports:
       - "3000:3000"

@@ -52,15 +52,13 @@ router.post(
             expiresIn: "30d",
         });
 
-        console.log(token);
-
         res.cookie("token", token, {
-            httpOnly: true, //stops js from reading the token
-            secure: false, //cookie is sent over https, false in development
-            sameSite: "lax", //controls across site
-            maxAge: 30 * 24 * 60 * 60 * 1000, //or use expires
-            path: "/", //controls url path
-            signed: false, //prevents tampering
+            httpOnly: true,
+            secure: process.env.NODE_ENV === "production",
+            sameSite: "lax",
+            maxAge: 30 * 24 * 60 * 60 * 1000,
+            path: "/",
+            signed: true,
         }).json({
             msg: "user created",
         });

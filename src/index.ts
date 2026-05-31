@@ -22,8 +22,12 @@ import user from "./user/user.ts";
 import me from "./user/me.ts";
 import { clean, preventPollution } from "./utils/InputSanitize.js";
 
+const allowedOrigins = process.env.CORS_ORIGIN
+    ? process.env.CORS_ORIGIN.split(",")
+    : [];
+
 const corsOptions: CorsOptions = {
-    origin: true,
+    origin: allowedOrigins.length > 0 ? allowedOrigins : false,
     methods: ["GET", "POST", "PUT", "PATCH", "DELETE", "OPTIONS"],
     allowedHeaders: ["Content-Type", "Authorization"],
     credentials: true,
@@ -42,7 +46,7 @@ const jwtSecret = process.env.JWT_SECRET;
 if (!jwtSecret) {
     throw new Error("JWT_SECRET is not set");
 }
-app.use(cp());
+app.use(cp(jwtSecret));
 
 app.use("/api/v1/auth", AuthLimit);
 app.use("/api", globalLimit);

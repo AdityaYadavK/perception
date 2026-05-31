@@ -14,7 +14,10 @@ const ehandler = (
         typeof err?.statusCode === "number" && err.statusCode >= 400 && err.statusCode <= 599
             ? err.statusCode
             : 500;
-    const message = typeof err?.message === "string" ? err.message : "Internal Server Error";
+    const message =
+        statusCode < 500 && typeof err?.message === "string"
+            ? err.message
+            : "Internal Server Error";
     res.status(statusCode).json({ msg: message });
 };
 

@@ -4,14 +4,10 @@ const router = express.Router();
 
 router.post("/", (_req: Request, res: Response) => {
     res.clearCookie("token", {
-        httpOnly: true, //JS cannot access
-        sameSite: "lax", //CSRF protection
-        maxAge: 30 * 24 * 60 * 60 * 1000,
-        secure: false,
+        httpOnly: true,
+        sameSite: "lax",
+        secure: process.env.NODE_ENV === "production",
         path: "/",
-        signed: false,
-    }).json({
-        msg: "login success!",
     });
     return res.status(200).json({
         msg: "logged out!",

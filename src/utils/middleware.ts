@@ -7,7 +7,7 @@ interface UserPayload extends JwtPayload {
 }
 
 const mid = (req: Request, res: Response, next: NextFunction) => {
-    const token = req.signedCookies?.token ?? req.cookies?.token;
+    const token = req.signedCookies?.token;
     if (!token) return next(new AppError("sign in again", 400));
     const jwtSecret = process.env.JWT_SECRET;
     if (!jwtSecret) return next(new AppError("JWT_SECRET is not set", 500));
@@ -25,7 +25,7 @@ const mid = (req: Request, res: Response, next: NextFunction) => {
 
         next();
     } catch (e) {
-        return next(new AppError(`${e}`, 500));
+        return next(new AppError("authentication failed", 401));
     }
 };
 

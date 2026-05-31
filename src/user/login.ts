@@ -17,7 +17,6 @@ const schema = z.object({
 });
 
 router.post("/", async (req: Request, res: Response, next: NextFunction) => {
-    console.log(req.body)
     const parsed = schema.safeParse(req.body);
     if (!parsed.success) return next(new AppError("input parse fail", 400));
 
@@ -39,14 +38,13 @@ router.post("/", async (req: Request, res: Response, next: NextFunction) => {
 
     if (!token) return next(new AppError("internal error", 500));
 
-    console.log(token);
     res.cookie("token", token, {
-        httpOnly: true, //JS cannot access
-        sameSite: "lax", //CSRF protection
+        httpOnly: true,
+        sameSite: "lax",
         maxAge: 30 * 24 * 60 * 60 * 1000,
-        secure: false,
+        secure: process.env.NODE_ENV === "production",
         path: "/",
-        signed: false,
+        signed: true,
     }).json({
         msg: "login success!",
     });

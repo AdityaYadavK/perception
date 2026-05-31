@@ -87,10 +87,22 @@ router.get("/:id", async (req: Request, res: Response, next: NextFunction) => {
 
     const post = await prisma.post.findUnique({
         where: { id },
-        include: {
-            likes: true,
-            author : true,
-            comments : true
+        select: {
+            id: true,
+            text: true,
+            createdAt: true,
+            author: {
+                select: {
+                    id: true,
+                    username: true,
+                },
+            },
+            _count: {
+                select: {
+                    likes: true,
+                    comments: true,
+                },
+            },
         },
     });
 
