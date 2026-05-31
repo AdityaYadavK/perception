@@ -6,6 +6,59 @@ import prisma from "../utils/prisma.ts";
 const router = express.Router();
 
 router.get(
+    "/search",
+    middleware,
+    async (req: Request, res: Response, next: NextFunction) => {
+        try {
+            const username =
+                typeof req.query.username === "string"
+                    ? req.query.username.trim()
+                    : "";
+
+            if (!username) {
+                return res.status(200).json({ users: [] });
+            }
+
+            const users = await prisma.user.findMany({
+                where: {
+                    username: {
+                        contains: username,
+                        mode: "insensitive",
+                    },
+                },
+                select: {
+                    id: true,
+                    username: true,
+                    createdAt: true,
+                    _count: {
+                        select: {
+                            posts: true,
+                            followers: true,
+                            following: true,
+                        },
+                    },
+                },
+                orderBy: {
+                    username: "asc",
+                },
+                take: 20,
+            });
+
+            return res.status(200).json({
+                users: users.map((user) => ({
+                    id: user.id,
+                    username: user.username,
+                    createdAt: user.createdAt,
+                    counts: user._count,
+                })),
+            });
+        } catch (error) {
+            return next(error);
+        }
+    },
+);
+
+router.get(
     "/:id",
     middleware,
     async (req: Request, res: Response, next: NextFunction) => {
