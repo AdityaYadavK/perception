@@ -11,7 +11,7 @@ router.post("/", (_req: Request, res: Response) => {
         path: "/",
         signed: false,
     }).json({
-        msg: "login success!",
+        msg: "logout success!",
     });
     return res.status(200).json({
         msg: "logged out!",
